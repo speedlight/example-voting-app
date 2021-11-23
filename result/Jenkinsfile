@@ -1,8 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3.6.1-jdk-8-alpine'
-            args '-v $HOME/.m2:/root/.m2'
+            image 'node:8.16.0-alpine'
         }
     }
 
@@ -11,7 +10,7 @@ pipeline {
             steps {
                 echo 'Compiling worker app'
                 dir('worker'){
-                  sh 'mvn compile'
+                  sh 'npm install'
                 }
             }
         }
@@ -19,7 +18,7 @@ pipeline {
             steps {
                 echo 'Unit Tests of worker app'
                 dir('worker'){
-                  sh 'mvn clean test'
+                  sh 'npm test'
                 }
             }
         }
@@ -34,7 +33,6 @@ pipeline {
     }
     post {
       always {
-        archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
         echo 'Pipeline completed'
       }
     }
